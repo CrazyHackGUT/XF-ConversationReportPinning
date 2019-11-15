@@ -1,0 +1,12 @@
+{
+    "public/smcrp_conversation_assign.html": {
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "d1f229c4bd9ec8b45190db5105d49913"
+    },
+    "public/smcrp_report_assign.html": {
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "6522549312ccb5dd0ca1145a3666bddc"
+    }
+}

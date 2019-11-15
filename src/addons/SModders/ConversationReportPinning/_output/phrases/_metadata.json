@@ -1,0 +1,62 @@
+{
+    "smcrp.assign_conversation.txt": {
+        "global_cache": false,
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "b8b387376354b94be536eb90f91c86fe"
+    },
+    "smcrp.assign_conversation_success.txt": {
+        "global_cache": false,
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "44a38a308f1bd2b080652b5ccf474319"
+    },
+    "smcrp.assign_conversation_to_report.txt": {
+        "global_cache": false,
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "7701fa2c636888ae0454fe6c7e3bc074"
+    },
+    "smcrp.assign_report.txt": {
+        "global_cache": false,
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "67347de141a73c345ccb7cdd4cca2934"
+    },
+    "smcrp.assign_report_to_conversation.txt": {
+        "global_cache": false,
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "d697b182b61925120919fea0ca77e7cb"
+    },
+    "smcrp.assigned_conversation_to_report_explain.txt": {
+        "global_cache": false,
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "5786a5c85854c04d388a8e0f35f44e28"
+    },
+    "smcrp.no_conversation.txt": {
+        "global_cache": false,
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "7c7f28d3e5ebf505ddb65638f955a684"
+    },
+    "smcrp.no_report.txt": {
+        "global_cache": false,
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "220387f0b4b778b627be4a52d06c2089"
+    },
+    "smcrp.you_sure_you_want_assign_conversation_x_to_report.txt": {
+        "global_cache": false,
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "a849232829d50682c275332d2257a914"
+    },
+    "smcrp.you_sure_you_want_assign_report_x_to_conversation.txt": {
+        "global_cache": false,
+        "version_id": 1000011,
+        "version_string": "1.0.0 Alpha 1",
+        "hash": "29073104c98f3fa5d2ff1bac08d8fd82"
+    }
+}

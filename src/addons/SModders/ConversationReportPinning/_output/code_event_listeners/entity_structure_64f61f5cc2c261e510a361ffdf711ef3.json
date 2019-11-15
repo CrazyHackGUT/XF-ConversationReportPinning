@@ -1,0 +1,9 @@
+{
+    "event_id": "entity_structure",
+    "execute_order": 10,
+    "callback_class": "SModders\\ConversationReportPinning\\Listener",
+    "callback_method": "onReportStructure",
+    "active": true,
+    "hint": "XF\\Entity\\Report",
+    "description": "Appends the new column definition (and relation) to the Report entity."
+}

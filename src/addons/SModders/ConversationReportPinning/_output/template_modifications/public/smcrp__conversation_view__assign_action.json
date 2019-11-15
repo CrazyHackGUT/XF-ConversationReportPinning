@@ -1,0 +1,9 @@
+{
+    "template": "conversation_view",
+    "description": "Add the action \"Assign report\" in conversation menu",
+    "execution_order": 10,
+    "enabled": true,
+    "action": "str_replace",
+    "find": "<xf:button href=\"{{ link('conversations/leave', $conversation) }}\" class=\"button--link\" overlay=\"true\">",
+    "replace": "<xf:if is=\"$xf.visitor.is_moderator\">\n\t<xf:button href=\"{{ link('conversations/assign-report', $conversation) }}\" class=\"button--link\" overlay=\"true\">\n\t\t{{ phrase('smcrp.assign_report') }}\n\t</xf:button>\n</xf:if>\n\n$0"
+}

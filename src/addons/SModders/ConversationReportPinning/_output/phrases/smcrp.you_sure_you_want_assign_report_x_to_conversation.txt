@@ -1,0 +1,1 @@
+Are you sure you want assign report {report} (#{id}) to conversation?

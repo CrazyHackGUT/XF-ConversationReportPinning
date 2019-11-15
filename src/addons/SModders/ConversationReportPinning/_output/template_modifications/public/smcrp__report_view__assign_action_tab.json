@@ -1,0 +1,9 @@
+{
+    "template": "report_view",
+    "description": "Add the tab action \"Assign conversation\" in report menu",
+    "execution_order": 10,
+    "enabled": true,
+    "action": "str_replace",
+    "find": "<a class=\"tabs-tab\" role=\"tab\" tabindex=\"0\" aria-controls=\"{{ unique_id('reportReassign') }}\">{{ phrase('reassign') }}</a>",
+    "replace": "<a href=\"{{ link('reports/assign-conversation', $report) }}\" class=\"tabs-tab\" role=\"tab\" tabindex=\"0\" aria-controls=\"{{ unique_id('reportConversationAssign') }}\">{{ phrase('smcrp.assign_conversation') }}</a>\n$0"
+}
