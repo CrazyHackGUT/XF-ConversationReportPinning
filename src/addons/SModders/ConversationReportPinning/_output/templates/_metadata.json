@@ -1,12 +1,17 @@
 {
     "public/smcrp_conversation_assign.html": {
-        "version_id": 1000011,
-        "version_string": "1.0.0 Alpha 1",
-        "hash": "d1f229c4bd9ec8b45190db5105d49913"
+        "version_id": 1000012,
+        "version_string": "1.0.0 Alpha 2",
+        "hash": "26d2983b6641718676b85aeeacd777d9"
+    },
+    "public/smcrp_conversation_view.html": {
+        "version_id": 1000012,
+        "version_string": "1.0.0 Alpha 2",
+        "hash": "12f31184989fd3bc20dd17e5caf86b67"
     },
     "public/smcrp_report_assign.html": {
-        "version_id": 1000011,
-        "version_string": "1.0.0 Alpha 1",
-        "hash": "6522549312ccb5dd0ca1145a3666bddc"
+        "version_id": 1000012,
+        "version_string": "1.0.0 Alpha 2",
+        "hash": "81506fb20c229fd264b972573e17d49a"
     }
 }

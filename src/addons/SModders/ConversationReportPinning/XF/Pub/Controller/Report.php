@@ -40,4 +40,24 @@ class Report extends XFCP_Report
         
         return $this->view('SModders\ConversationReportPinning:Report\AssignConversation', 'smcrp_report_assign', $viewParams);
     }
+    
+    public function actionConversation(ParameterBag $params)
+    {
+        $report = $this->assertViewableReport($params->report_id);
+        $controller = __CLASS__;
+        if ($report->Conversation)
+        {
+            /** @var \XF\Entity\ConversationMaster $conversation */
+            $conversation = $report->Conversation;
+            if ($conversation->canView())
+            {
+                return $this->redirect($this->buildLink('conversations', $conversation));
+            }
+            
+            $controller = 'XF:Conversation';
+            $params = new ParameterBag(['conversation_id' => $conversation->conversation_id]);
+        }
+        
+        return $this->rerouteController($controller, 'view', $params);
+    }
 }

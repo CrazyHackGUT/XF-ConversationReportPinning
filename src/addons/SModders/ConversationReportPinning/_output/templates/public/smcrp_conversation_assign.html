@@ -1,6 +1,6 @@
 <xf:title>{{ phrase('smcrp.assign_conversation_to_report') }}</xf:title>
 
-<xf:form action="{{ link('conversations/assign-report', $conversation) }}" class="block" ajax="true">
+<xf:form action="{{ link('conversations/assign-report', $conversation) }}" class="block" ajax="true" data-force-flash-message="true">
 	<div class="block-container">
 		<div class="block-body">
 			<xf:inforow rowtype="confirm">{{ phrase('smcrp.you_sure_you_want_assign_conversation_x_to_report', {'conversation': $conversation.title}) }}</xf:inforow>

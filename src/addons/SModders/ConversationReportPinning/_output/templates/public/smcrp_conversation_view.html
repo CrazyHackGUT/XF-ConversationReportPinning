@@ -1,0 +1,12 @@
+<xf:title>{{ phrase('confirm_action') }}</xf:title>
+
+<xf:form action="{{ link('conversations', $conversation) }}" ajax="true" class="block">
+	<div class="block-container">
+		<div class="block-body">
+			<xf:inforow rowtype="confirm">
+				{{ phrase('smcrp.please_confirm_joining_to_conversation_x', {'report': $conversation.Report.getTitle()}) }}
+			</xf:inforow>
+		</div>
+		<xf:submitrow rowtype="simple" icon="confirm" />
+	</div>
+</xf:form>

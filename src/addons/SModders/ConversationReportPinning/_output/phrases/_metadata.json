@@ -47,6 +47,12 @@
         "version_string": "1.0.0 Alpha 1",
         "hash": "220387f0b4b778b627be4a52d06c2089"
     },
+    "smcrp.please_confirm_joining_to_conversation_x.txt": {
+        "global_cache": false,
+        "version_id": 1000012,
+        "version_string": "1.0.0 Alpha 2",
+        "hash": "817fce415121e7be0d3054431e0011e7"
+    },
     "smcrp.you_sure_you_want_assign_conversation_x_to_report.txt": {
         "global_cache": false,
         "version_id": 1000011,
