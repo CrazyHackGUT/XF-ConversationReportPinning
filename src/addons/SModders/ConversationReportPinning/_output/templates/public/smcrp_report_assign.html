@@ -10,6 +10,12 @@
 				explain="{{ phrase('smcrp.assigned_conversation_to_report_explain') }}">
 				
 				<xf:option value="0">{{ phrase('smcrp.no_conversation') }}</xf:option>
+				<xf:if is="$report.Conversation && !$report.Conversation.canView()">
+					<xf:option value="$report.Conversation.conversation_id">{{ $report.Conversation.title }}</xf:option>
+				</xf:if>
+				
+				<xf:option value="-1" disabled="true">---</xf:option>
+
 				<xf:foreach loop="$conversations" value="$conversation">
 					<xf:option value="{{ $conversation.conversation_id }}">{{ $conversation.title }}</xf:option>
 				</xf:foreach>

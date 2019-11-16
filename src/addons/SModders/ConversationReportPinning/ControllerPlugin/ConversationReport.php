@@ -22,8 +22,8 @@ class ConversationReport extends AbstractPlugin
      */
     public function assignReportToConversation($reportId, $conversationId)
     {
-        $report = $this->assertReportViewable($reportId);
-        $conversation = $this->assertConversationViewable($conversationId);
+        $report = $this->assertReportExists($reportId);
+        $conversation = $this->assertConversationExists($conversationId);
 
         $db = $this->app->db();
         $db->beginTransaction();
@@ -31,8 +31,12 @@ class ConversationReport extends AbstractPlugin
         if ($report) {
             /** @var \XF\Entity\ConversationMaster $oldConversation */
             $oldConversation = $report->Conversation;
+            if ($conversationId != $report->smcrp_conversation_id)
+            {
+                $this->assertEntityViewable($conversation);
+            }
+
             $report->fastUpdate('smcrp_conversation_id', $conversationId);
-            
             if ($oldConversation)
             {
                 $oldConversation->fastUpdate('smcrp_report_id');
@@ -43,8 +47,12 @@ class ConversationReport extends AbstractPlugin
         {
             /** @var \XF\Entity\Report $oldReport */
             $oldReport = $conversation->Report;
-            $conversation->fastUpdate('smcrp_report_id', $reportId);
+            if ($reportId != $conversation->smcrp_report_id)
+            {
+                $this->assertEntityViewable($conversation);
+            }
             
+            $conversation->fastUpdate('smcrp_report_id', $reportId);
             if ($oldReport)
             {
                 $oldReport->fastUpdate('smcrp_conversation_id');
@@ -67,9 +75,9 @@ class ConversationReport extends AbstractPlugin
      * @return \XF\Entity\ConversationMaster|null
      * @throws \XF\Mvc\Reply\Exception
      */
-    protected function assertConversationViewable(&$conversationId)
+    protected function assertConversationExists(&$conversationId)
     {
-        return $this->assertEntityViewable('XF:ConversationMaster', $conversationId, \XF::phrase('requested_conversation_not_found'));
+        return $this->assertEntityExists('XF:ConversationMaster', $conversationId, \XF::phrase('requested_conversation_not_found'));
     }
     
     /**
@@ -77,21 +85,20 @@ class ConversationReport extends AbstractPlugin
      * @return \XF\Entity\Report|null
      * @throws \XF\Mvc\Reply\Exception
      */
-    protected function assertReportViewable(&$reportId)
+    protected function assertReportExists(&$reportId)
     {
-        return $this->assertEntityViewable('XF:Report', $reportId, \XF::phrase('requested_report_not_found'));
+        return $this->assertEntityExists('XF:Report', $reportId, \XF::phrase('requested_report_not_found'));
     }
     
     /**
      * @param $shortName
      * @param $id
      * @param string|Phrase|null $notFound
-     * @param string|Phrase|null $noPermission
      *
      * @return \XF\Mvc\Entity\Entity|null
      * @throws \XF\Mvc\Reply\Exception
      */
-    protected function assertEntityViewable($shortName, &$id, $notFound = null, $noPermission = null)
+    protected function assertEntityExists($shortName, &$id, $notFound = null)
     {
         if ($id == 0)
         {
@@ -105,11 +112,24 @@ class ConversationReport extends AbstractPlugin
             throw $this->exception($this->notFound($notFound));
         }
         
+        return $entity;
+    }
+    
+    /**
+     * @param Entity $entity
+     * @param string|Phrase|null $noPermission
+     * @throws \XF\Mvc\Reply\Exception
+     */
+    protected function assertEntityViewable($entity, $noPermission = null)
+    {
+        if ($entity === null)
+        {
+            return;
+        }
+        
         if (!$entity->canView())
         {
             throw $this->exception($this->noPermission($noPermission));
         }
-        
-        return $entity;
     }
 }
