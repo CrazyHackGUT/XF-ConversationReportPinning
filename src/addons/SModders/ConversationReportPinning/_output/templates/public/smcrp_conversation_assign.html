@@ -11,7 +11,7 @@
 				
 				<xf:option value="0">{{ phrase('smcrp.no_report') }}</xf:option>
 				<xf:if is="$conversation.Report && !$conversation.Report.canView()">
-					<xf:option value="$conversation.Report.report_id">{{ $conversation.Report.getTitle() }} (#{{ $conversation.Report.report_id }})</xf:option>
+					<xf:option value="{{ $conversation.Report.report_id }}">{{ $conversation.Report.getTitle() }} (#{{ $conversation.Report.report_id }})</xf:option>
 				</xf:if>
 				
 				<xf:option value="-1" disabled="true">---</xf:option>
