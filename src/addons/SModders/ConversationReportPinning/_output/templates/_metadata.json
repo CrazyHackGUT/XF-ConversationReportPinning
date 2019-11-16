@@ -13,5 +13,10 @@
         "version_id": 1000013,
         "version_string": "1.0.0 Alpha 3",
         "hash": "ba89261adb060f75fc603c8db89e4e33"
+    },
+    "public/smcrp_report_conversation_message.html": {
+        "version_id": 1000014,
+        "version_string": "1.0.0 Alpha 4",
+        "hash": "9fb992ee74367649e582ec38ce2707c0"
     }
 }

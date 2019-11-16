@@ -1,0 +1,21 @@
+[I]{{ phrase('smcrp_report.conversation_changed') }}[/I]
+[QUOTE]
+<xf:if is="$old_conversation"><xf:trim>
+	<xf:set var="$conversation"><xf:trim>
+		[URL="{{ link('canonical:conversations', $old_conversation) }}"]{{ $old_conversation.title }}[/URL]
+	</xf:trim></xf:set>
+
+	{{ phrase('smcrp_report.old_conversation', {'conversation': $conversation}) }}
+</xf:trim></xf:if>
+<xf:trim>
+	<xf:set var="$conversation"><xf:trim>
+		<xf:if is="$new_conversation">
+			[URL="{{ link('canonical:conversations', $new_conversation) }}"]{{ $new_conversation.title }}[/URL]
+		<xf:else />
+			{{ phrase('smcrp.no_conversation') }}
+		</xf:if>
+	</xf:trim></xf:set>
+	
+	{{ phrase('smcrp_report.new_conversation', {'conversation': $conversation}) }}
+</xf:trim>
+[/QUOTE]

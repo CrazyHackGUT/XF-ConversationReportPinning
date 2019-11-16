@@ -64,5 +64,23 @@
         "version_id": 1000011,
         "version_string": "1.0.0 Alpha 1",
         "hash": "29073104c98f3fa5d2ff1bac08d8fd82"
+    },
+    "smcrp_report.conversation_changed.txt": {
+        "global_cache": false,
+        "version_id": 1000014,
+        "version_string": "1.0.0 Alpha 4",
+        "hash": "adca60eece475e2c2d492dd7fe088def"
+    },
+    "smcrp_report.new_conversation.txt": {
+        "global_cache": false,
+        "version_id": 1000014,
+        "version_string": "1.0.0 Alpha 4",
+        "hash": "2208c51eddf012ac196ff202603f7ad6"
+    },
+    "smcrp_report.old_conversation.txt": {
+        "global_cache": false,
+        "version_id": 1000014,
+        "version_string": "1.0.0 Alpha 4",
+        "hash": "4c4e9b87e2aa9f55d092e2521019bcb8"
     }
 }

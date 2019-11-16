@@ -11,6 +11,8 @@ namespace SModders\ConversationReportPinning\ControllerPlugin;
 
 
 use XF\ControllerPlugin\AbstractPlugin;
+use XF\Entity\ConversationMaster;
+use XF\Entity\Report;
 use XF\Phrase;
 
 class ConversationReport extends AbstractPlugin
@@ -41,6 +43,8 @@ class ConversationReport extends AbstractPlugin
             {
                 $oldConversation->fastUpdate('smcrp_report_id');
             }
+            
+            $this->addNewMessage($report, $oldConversation, $conversation);
         }
     
         if ($conversation)
@@ -57,6 +61,11 @@ class ConversationReport extends AbstractPlugin
             {
                 $oldReport->fastUpdate('smcrp_conversation_id');
             }
+    
+            if ($oldReport)
+            {
+                $this->addNewMessage($oldReport, $conversation, null);
+            }
         }
 
         $db->commit();
@@ -68,6 +77,40 @@ class ConversationReport extends AbstractPlugin
         
         $requestUri = $this->request->get('_xfRequestUri');
         return $this->redirect($requestUri, \XF::phrase('smcrp.assign_conversation_success', $phraseParams));
+    }
+    
+    /**
+     * @param Report $report
+     * @param ConversationMaster|null $oldConversation
+     * @param ConversationMaster|null $newConversation
+     */
+    protected function addNewMessage(Report $report, $oldConversation, $newConversation)
+    {
+        /** @var \XF\Service\Report\Commenter $commenter */
+        $commenter = $this->service('XF:Report\Commenter', $report);
+        $commenter->setMessage($this->generateCommentText($oldConversation, $newConversation));
+
+        $commenter->save();
+        $commenter->sendNotifications();
+        
+        $this->session()->reportLastRead = \XF::$time;
+    }
+    
+    protected function generateCommentText($oldConversation, $newConversation)
+    {
+        $template = $this->getTemplateName();
+        $params = [
+            'old_conversation' => $oldConversation,
+            'new_conversation' => $newConversation
+        ];
+        
+        return $this->app->templater()
+            ->renderTemplate($template, $params);
+    }
+    
+    protected function getTemplateName()
+    {
+        return 'public:smcrp_report_conversation_message';
     }
     
     /**
@@ -116,18 +159,13 @@ class ConversationReport extends AbstractPlugin
     }
     
     /**
-     * @param Entity $entity
+     * @param \XF\Mvc\Entity\Entity|null $entity
      * @param string|Phrase|null $noPermission
      * @throws \XF\Mvc\Reply\Exception
      */
     protected function assertEntityViewable($entity, $noPermission = null)
     {
-        if ($entity === null)
-        {
-            return;
-        }
-        
-        if (!$entity->canView())
+        if ($entity && !$entity->canView())
         {
             throw $this->exception($this->noPermission($noPermission));
         }
