@@ -34,14 +34,14 @@ class Conversation extends XFCP_Conversation
             $reply = $e->getReply();
             if (!($reply instanceof Error) || $reply->getResponseCode() != 404)
             {
-                throw;
+                throw $e;
             }
 
             $plugIn = $this->getConversationReportPlugIn();
             $visitor = \XF::visitor();
             if (!$plugIn->canJoinToConversations($visitor))
             {
-                throw;
+                throw $e;
             }
 
             $conversation = $this->assertViewableConversation($params->conversation_id);
@@ -68,8 +68,7 @@ class Conversation extends XFCP_Conversation
         {
             $targetReportId = $this->filter('target_report_id', 'int');
 
-            return $plugIn
-                ->assignReportToConversation($targetReportId, $masterConv->conversation_id);
+            return $plugIn->assignReportToConversation($targetReportId, $masterConv->conversation_id);
         }
         
         /** @var \XF\Mvc\Entity\ArrayCollection $reports */
