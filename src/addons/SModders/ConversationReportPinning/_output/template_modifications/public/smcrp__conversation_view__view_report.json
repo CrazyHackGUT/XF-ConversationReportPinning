@@ -5,5 +5,5 @@
     "enabled": true,
     "action": "str_replace",
     "find": "<dl class=\"pairs pairs--justified\"><dt>{{ phrase('last_reply_from') }}</dt> <dd><xf:username user=\"$conversation.LastMessageUser\" /></dd></dl>",
-    "replace": "$0\n<xf:if is=\"$xf.visitor.is_moderator && $conversation.Report && $conversation.Report.canView()\">\n\t<dl class=\"pairs pairs--justified\">\n\t\t<dt>{{ phrase('report') }}</dt>\n\t\t<dd>\n\t\t\t<a href=\"{{ link('reports', $conversation.Report) }}\" data-xf-init=\"tooltip\" title=\"{{ $conversation.Report.getTitle()|for_attr }}\">\n\t\t\t\t{{ phrase('open') }}\n\t\t\t</a>\n\t\t</dd>\n\t</dl>\n</xf:if>"
+    "replace": "$0\n<xf:if is=\"$xf.visitor.is_moderator && $conversation.Report && $conversation.Report.canView()\">\n\t<dl class=\"pairs pairs--justified\">\n\t\t<dt>{{ phrase('report') }}</dt>\n\t\t<dd>\n\t\t\t<a href=\"{{ link('reports', $conversation.Report) }}\" data-xf-init=\"tooltip\" title=\"{{ $conversation.Report.getTitle()|for_attr }}\">\n\t\t\t\t{$conversation.Report.getReportState()}\n\t\t\t</a>\n\t\t</dd>\n\t</dl>\n</xf:if>\n"
 }
