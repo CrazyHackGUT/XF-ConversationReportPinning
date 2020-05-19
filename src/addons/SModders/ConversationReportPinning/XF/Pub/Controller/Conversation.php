@@ -12,6 +12,7 @@ namespace SModders\ConversationReportPinning\XF\Pub\Controller;
 
 use XF\Entity\ConversationMaster;
 use XF\Mvc\ParameterBag;
+use XF\Mvc\Reply\Error;
 use XF\Mvc\Reply\Exception;
 use XF\Mvc\Reply\View;
 
@@ -30,24 +31,29 @@ class Conversation extends XFCP_Conversation
         }
         catch (Exception $e)
         {
+            $reply = $e->getReply();
+            if (!($reply instanceof Error) || $reply->getResponseCode() != 404)
+            {
+                throw;
+            }
+
             $plugIn = $this->getConversationReportPlugIn();
             $visitor = \XF::visitor();
-            if ($visitor->hasPermission('smcrp', 'joinConversations'))
+            if (!$plugIn->canJoinToConversations($visitor))
             {
-                $conversation = $this->assertViewableConversation($params->conversation_id);
-                if ($this->isPost())
-                {
-                    return $this->addConversationMember($visitor, $conversation);
-                }
-        
-                $viewParams = [
-                    'conversation' => $conversation
-                ];
-        
-                return $this->view('SModders\ConversationReportPinning:Conversation\View', 'smcrp_conversation_view', $viewParams);
+                throw;
             }
-            
-            throw $e;
+
+            $conversation = $this->assertViewableConversation($params->conversation_id);
+            if ($this->isPost())
+            {
+                return $this->addConversationMember($visitor, $conversation);
+            }
+        
+            $viewParams = [
+                'conversation' => $conversation
+            ];
+            return $this->view('SModders\ConversationReportPinning:Conversation\View', 'smcrp_conversation_view', $viewParams);
         }
     }
     
