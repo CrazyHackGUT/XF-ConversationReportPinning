@@ -30,47 +30,14 @@ class Conversation extends XFCP_Conversation
         }
         catch (Exception $e)
         {
+            $plugIn = $this->getConversationReportPlugIn();
             $visitor = \XF::visitor();
-            if ($visitor->is_moderator)
+            if ($visitor->hasPermission('smcrp', 'joinConversations'))
             {
                 $conversation = $this->assertViewableConversation($params->conversation_id);
                 if ($this->isPost())
                 {
-                    /** @var \XF\Repository\Conversation $conversationRepo */
-                    $conversationRepo = $this->repository('XF:Conversation');
-
-                    // If user already joined previously, insertRecipients() don't work.
-                    // So we handle this case in another way.
-                    if (array_key_exists($visitor->user_id, $conversation->recipients))
-                    {
-                        /** @var \XF\Entity\ConversationRecipient|null $conversationRecipient */
-                        $conversationRecipient = $conversationRepo->findRecipientsForList($conversation)
-                            ->where('user_id', $visitor->user_id)
-                            ->fetchOne();
-
-                        if ($conversationRecipient)
-                        {
-                            $conversationRecipient->recipient_state = 'active';
-                            $conversationRecipient->save();
-                        }
-    
-                        // Rebuild recipient cache.
-                        $conversation->rebuildRecipientCache();
-                        
-                        // ... and if user is really already joined previously, redirect him to conversation.
-                        // We're re-added user to conversation, and XF should allow view conversation.
-                        if ($conversationRecipient)
-                        {
-                            return $this->openConversation($conversation);
-                        }
-    
-                        // If code reached to this point, forum administrator tries clean database. So we should
-                        // continue by "default way": user neved joined to conversation.
-                    }
-                    
-                    // User never joined to this conversation. Add him by default way.
-                    $conversationRepo->insertRecipients($conversation, [$visitor]);
-                    return $this->openConversation($conversation);
+                    return $this->addConversationMember($visitor, $conversation);
                 }
         
                 $viewParams = [
@@ -86,14 +53,16 @@ class Conversation extends XFCP_Conversation
     
     public function actionAssignReport(ParameterBag $params)
     {
-        $this->assertIsModerator();
+        /** @var \SModders\ConversationReportPinning\ControllerPlugin\ConversationReport $plugIn */
+        $plugIn = $this->getConversationReportPlugIn();
+        $plugIn->assertCanAssignConversations();
+
         $masterConv = $this->assertViewableUserConversation($params->conversation_id)->Master;
-        
         if ($this->isPost())
         {
             $targetReportId = $this->filter('target_report_id', 'int');
 
-            return $this->plugin('SModders\ConversationReportPinning:ConversationReport')
+            return $plugIn
                 ->assignReportToConversation($targetReportId, $masterConv->conversation_id);
         }
         
@@ -110,20 +79,7 @@ class Conversation extends XFCP_Conversation
         
         return $this->view('SModders\ConversationReportPinning:Conversation\AssignReport', 'smcrp_conversation_assign', $viewParams);
     }
-    
-    /**
-     * @throws \XF\Mvc\Reply\Exception
-     */
-    protected function assertIsModerator()
-    {
-        if (\XF::visitor()->is_moderator)
-        {
-            return;
-        }
-        
-        throw $this->exception($this->noPermission());
-    }
-    
+
     /**
      * @param $conversationId
      * @return \XF\Entity\ConversationMaster
@@ -131,6 +87,7 @@ class Conversation extends XFCP_Conversation
      */
     protected function assertViewableConversation($conversationId)
     {
+        /** @var \XF\Entity\ConversationMaster $conversation */
         $conversation = $this->em()->find('XF:ConversationMaster', $conversationId, ['Report', 'Starter']);
         if (!$conversation || !$conversation->Report || !$conversation->Report->canView())
         {
@@ -143,5 +100,55 @@ class Conversation extends XFCP_Conversation
     protected function openConversation(ConversationMaster $conversation)
     {
         return $this->redirect($this->buildLink('conversations', $conversation));
+    }
+
+    /**
+     * @param \XF\Entity\User $visitor
+     * @param ConversationMaster $conversation
+     * @return \XF\Mvc\Reply\Redirect
+     * @throws \XF\PrintableException
+     */
+    protected function addConversationMember(\XF\Entity\User $visitor, ConversationMaster $conversation)
+    {
+        /** @var \XF\Repository\Conversation $conversationRepo */
+        $conversationRepo = $this->repository('XF:Conversation');
+
+        // If user already joined previously, insertRecipients() don't work.
+        // So we handle this case in another way.
+        if (array_key_exists($visitor->user_id, $conversation->recipients)) {
+            /** @var \XF\Entity\ConversationRecipient|null $conversationRecipient */
+            $conversationRecipient = $conversationRepo->findRecipientsForList($conversation)
+                ->where('user_id', $visitor->user_id)
+                ->fetchOne();
+
+            if ($conversationRecipient) {
+                $conversationRecipient->recipient_state = 'active';
+                $conversationRecipient->save();
+            }
+
+            // Rebuild recipient cache.
+            $conversation->rebuildRecipientCache();
+
+            // ... and if user is really already joined previously, redirect him to conversation.
+            // We're re-added user to conversation, and XF should allow view conversation.
+            if ($conversationRecipient) {
+                return $this->openConversation($conversation);
+            }
+
+            // If code reached to this point, forum administrator tries clean database. So we should
+            // continue by "default way": user neved joined to conversation.
+        }
+
+        // User never joined to this conversation. Add him by default way.
+        $conversationRepo->insertRecipients($conversation, [$visitor]);
+        return $this->openConversation($conversation);
+    }
+
+    /**
+     * @return \SModders\ConversationReportPinning\ControllerPlugin\ConversationReport
+     */
+    protected function getConversationReportPlugIn()
+    {
+        return $this->plugin('SModders\ConversationReportPinning:ConversationReport');
     }
 }

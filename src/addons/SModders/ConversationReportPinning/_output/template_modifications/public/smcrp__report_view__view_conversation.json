@@ -5,5 +5,5 @@
     "enabled": true,
     "action": "str_replace",
     "find": "<xf:button href=\"{$report.link}\">{{ phrase('go_to_content') }}</xf:button>",
-    "replace": "<xf:if is=\"$report.Conversation\">\n\t<xf:button href=\"{{ link('reports/conversation', $report) }}\" overlay=\"{{ !$report.Conversation.canView() }}\">\n\t\t{{ phrase('conversation') }}\n\t</xf:button>\n</xf:if>\n$0"
+    "replace": "<xf:if is=\"$report.Conversation && ($xf.visitor.hasPermission('smcrp', 'joinConversations') || $report.Conversation.canView())\">\n\t<xf:button href=\"{{ link('reports/conversation', $report) }}\" overlay=\"{{ !$report.Conversation.canView() }}\">\n\t\t{{ phrase('conversation') }}\n\t</xf:button>\n</xf:if>\n$0"
 }

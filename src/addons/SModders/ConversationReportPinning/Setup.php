@@ -28,7 +28,7 @@ class Setup extends AbstractSetup
             $table->addColumn('smcrp_report_id', 'integer')->nullable()
                 ->comment('Refer to the related assigned report');
         });
-        
+
         $this->alterTable('xf_report', function (Alter $table)
         {
             $table->addColumn('smcrp_conversation_id', 'integer')->nullable()

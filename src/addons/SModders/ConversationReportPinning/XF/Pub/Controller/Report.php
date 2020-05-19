@@ -16,16 +16,16 @@ class Report extends XFCP_Report
 {
     public function actionAssignConversation(ParameterBag $params)
     {
+        $plugIn = $this->getConversationReportPlugIn();
+        $plugIn->assertCanAssignConversations();
+
         $report = $this->assertViewableReport($params->report_id);
-    
         if ($this->isPost())
         {
             $targetConversationId = $this->filter('target_conversation_id', 'int');
-        
-            return $this->plugin('SModders\ConversationReportPinning:ConversationReport')
-                ->assignReportToConversation($report->report_id, $targetConversationId);
+            return $plugIn->assignReportToConversation($report->report_id, $targetConversationId);
         }
-        
+
         /** @var \XF\Mvc\Entity\ArrayCollection $conversations */
         $conversations = $this->repository('XF:Conversation')
             ->findUserConversations(\XF::visitor(), true)
@@ -37,7 +37,7 @@ class Report extends XFCP_Report
 
             'assigned_conversation' => $report->smcrp_conversation_id ?: 0
         ];
-        
+
         return $this->view('SModders\ConversationReportPinning:Report\AssignConversation', 'smcrp_report_assign', $viewParams);
     }
     
@@ -45,19 +45,29 @@ class Report extends XFCP_Report
     {
         $report = $this->assertViewableReport($params->report_id);
         $controller = __CLASS__;
-        if ($report->Conversation)
+
+        /** @var \XF\Entity\ConversationMaster|null $conversation */
+        $conversation = $report->Conversation;
+        if ($conversation)
         {
-            /** @var \XF\Entity\ConversationMaster $conversation */
-            $conversation = $report->Conversation;
             if ($conversation->canView())
             {
                 return $this->redirect($this->buildLink('conversations', $conversation));
             }
-            
+
+            $this->getConversationReportPlugIn()->assertCanJoinToConversations();
             $controller = 'XF:Conversation';
             $params = new ParameterBag(['conversation_id' => $conversation->conversation_id]);
         }
         
         return $this->rerouteController($controller, 'view', $params);
+    }
+
+    /**
+     * @return \SModders\ConversationReportPinning\ControllerPlugin\ConversationReport
+     */
+    protected function getConversationReportPlugIn()
+    {
+        return $this->plugin('SModders\ConversationReportPinning:ConversationReport');
     }
 }

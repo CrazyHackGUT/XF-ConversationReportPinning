@@ -13,10 +13,57 @@ namespace SModders\ConversationReportPinning\ControllerPlugin;
 use XF\ControllerPlugin\AbstractPlugin;
 use XF\Entity\ConversationMaster;
 use XF\Entity\Report;
+use XF\Entity\User;
 use XF\Phrase;
 
 class ConversationReport extends AbstractPlugin
 {
+    /**
+     * @param User|null $user
+     * @return bool
+     */
+    public function canJoinToConversations(User $user = null)
+    {
+        $user = $user ?: \XF::visitor();
+        return $user->hasPermission('smcrp', 'joinConversations');
+    }
+
+    /**
+     * @param User|null $user
+     * @return bool
+     */
+    public function canAssignConversations(User $user = null)
+    {
+        $user = $user ?: \XF::visitor();
+        return $user->hasPermission('smcrp', 'assignConversations');
+    }
+
+    /**
+     * @param User|null $user
+     * @throws \XF\Mvc\Reply\Exception
+     */
+    public function assertCanJoinToConversations(User $user = null)
+    {
+        $user = $user ?: \XF::visitor();
+        if (!$this->canJoinToConversations($user))
+        {
+            throw $this->exception($this->noPermission());
+        }
+    }
+
+    /**
+     * @param User|null $user
+     * @throws \XF\Mvc\Reply\Exception
+     */
+    public function assertCanAssignConversations(User $user = null)
+    {
+        $user = $user ?: \XF::visitor();
+        if (!$this->canAssignConversations($user))
+        {
+            throw $this->exception($this->noPermission());
+        }
+    }
+
     /**
      * @param $reportId
      * @param $conversationId
@@ -43,10 +90,10 @@ class ConversationReport extends AbstractPlugin
             {
                 $oldConversation->fastUpdate('smcrp_report_id');
             }
-            
+
             $this->addNewMessage($report, $oldConversation, $conversation);
         }
-    
+
         if ($conversation)
         {
             /** @var \XF\Entity\Report $oldReport */
@@ -55,13 +102,13 @@ class ConversationReport extends AbstractPlugin
             {
                 $this->assertEntityViewable($conversation);
             }
-            
+
             $conversation->fastUpdate('smcrp_report_id', $reportId);
             if ($oldReport)
             {
                 $oldReport->fastUpdate('smcrp_conversation_id');
             }
-    
+
             if ($oldReport)
             {
                 $this->addNewMessage($oldReport, $conversation, null);
@@ -69,12 +116,12 @@ class ConversationReport extends AbstractPlugin
         }
 
         $db->commit();
-        
+
         $phraseParams = [
             'conversation' => $conversation ? $conversation->title : \XF::phrase('smcrp.no_conversation'),
             'report' => $report ? $report->getTitle() : \XF::phrase('smcrp.no_report')
         ];
-        
+
         $requestUri = $this->request->get('_xfRequestUri');
         return $this->redirect($requestUri, \XF::phrase('smcrp.assign_conversation_success', $phraseParams));
     }
@@ -95,7 +142,12 @@ class ConversationReport extends AbstractPlugin
         
         $this->session()->reportLastRead = \XF::$time;
     }
-    
+
+    /**
+     * @param $oldConversation
+     * @param $newConversation
+     * @return string
+     */
     protected function generateCommentText($oldConversation, $newConversation)
     {
         $template = $this->getTemplateName();
@@ -107,32 +159,35 @@ class ConversationReport extends AbstractPlugin
         return $this->app->templater()
             ->renderTemplate($template, $params);
     }
-    
+
+    /**
+     * @return string
+     */
     protected function getTemplateName()
     {
         return 'public:smcrp_report_conversation_message';
     }
-    
+
     /**
      * @param $conversationId
-     * @return \XF\Entity\ConversationMaster|null
+     * @return \XF\Entity\ConversationMaster
      * @throws \XF\Mvc\Reply\Exception
      */
     protected function assertConversationExists(&$conversationId)
     {
         return $this->assertEntityExists('XF:ConversationMaster', $conversationId, \XF::phrase('requested_conversation_not_found'));
     }
-    
+
     /**
      * @param $reportId
-     * @return \XF\Entity\Report|null
+     * @return \XF\Entity\Report
      * @throws \XF\Mvc\Reply\Exception
      */
     protected function assertReportExists(&$reportId)
     {
         return $this->assertEntityExists('XF:Report', $reportId, \XF::phrase('requested_report_not_found'));
     }
-    
+
     /**
      * @param $shortName
      * @param $id
@@ -157,7 +212,7 @@ class ConversationReport extends AbstractPlugin
         
         return $entity;
     }
-    
+
     /**
      * @param \XF\Mvc\Entity\Entity|null $entity
      * @param string|Phrase|null $noPermission

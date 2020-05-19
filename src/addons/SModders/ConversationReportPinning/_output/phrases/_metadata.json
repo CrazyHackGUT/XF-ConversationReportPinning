@@ -1,4 +1,16 @@
 {
+    "permission.smcrp_assignConversations.txt": {
+        "global_cache": false,
+        "version_id": 1000070,
+        "version_string": "1.0.0",
+        "hash": "c1d216376a2058bed6e53b8f42e0aed7"
+    },
+    "permission.smcrp_joinConversations.txt": {
+        "global_cache": false,
+        "version_id": 1000070,
+        "version_string": "1.0.0",
+        "hash": "b34740626608d26d609703b6116b881f"
+    },
     "smcrp.assign_conversation.txt": {
         "global_cache": false,
         "version_id": 1000011,

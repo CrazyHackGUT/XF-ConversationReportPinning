@@ -5,5 +5,5 @@
     "enabled": true,
     "action": "str_replace",
     "find": "<li role=\"tabpanel\" id=\"{{ unique_id('reportReassign') }}\">",
-    "replace": "<li data-href=\"{{ link('reports/assign-conversation', $report) }}\" role=\"tabpanel\" id=\"{{ unique_id('reportConversationAssign') }}\">\n\t<div class=\"blockMessage\">{{ phrase('loading...') }}</div>\n</li>\n\n$0"
+    "replace": "<xf:if is=\"$xf.visitor.hasPermission('smcrp', 'assignConversations')\">\n\t<li data-href=\"{{ link('reports/assign-conversation', $report) }}\" role=\"tabpanel\" id=\"{{ unique_id('reportConversationAssign') }}\">\n\t\t<div class=\"blockMessage\">{{ phrase('loading...') }}</div>\n\t</li>\n</xf:if>\n\n$0"
 }
