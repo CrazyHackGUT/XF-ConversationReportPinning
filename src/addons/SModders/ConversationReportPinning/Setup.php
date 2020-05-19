@@ -45,7 +45,7 @@ class Setup extends AbstractSetup
         
         $this->alterTable('xf_report', function (Alter $table)
         {
-            $table->dropColumns(['smcrp_report_id']);
+            $table->dropColumns(['smcrp_conversation_id']);
         });
     }
 }
