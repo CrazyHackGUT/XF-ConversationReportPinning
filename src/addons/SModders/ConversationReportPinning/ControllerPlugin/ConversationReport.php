@@ -175,7 +175,7 @@ class ConversationReport extends AbstractPlugin
      */
     protected function assertConversationExists(&$conversationId)
     {
-        return $this->assertEntityExists('XF:ConversationMaster', $conversationId, \XF::phrase('requested_conversation_not_found'));
+        return $this->assertEntityExists('XF:ConversationMaster', $conversationId, 'requested_conversation_not_found');
     }
 
     /**
@@ -185,7 +185,7 @@ class ConversationReport extends AbstractPlugin
      */
     protected function assertReportExists(&$reportId)
     {
-        return $this->assertEntityExists('XF:Report', $reportId, \XF::phrase('requested_report_not_found'));
+        return $this->assertEntityExists('XF:Report', $reportId, 'requested_report_not_found');
     }
 
     /**
@@ -204,13 +204,7 @@ class ConversationReport extends AbstractPlugin
             return null;
         }
 
-        $entity = $this->em->find($shortName, $id);
-        if (!$entity)
-        {
-            throw $this->exception($this->notFound($notFound));
-        }
-        
-        return $entity;
+        return $this->assertRecordExists($shortName, $id, $notFound);
     }
 
     /**
